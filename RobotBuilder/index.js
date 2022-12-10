@@ -11,12 +11,22 @@ function init() {
 }
 
 function change(val, amt) {
-    vals[val_to_index[val]] += amt;
+    limits = {
+        "solar" : {"power-level" : 10, "top-speed" : 10, "structural-integrity" : 10},
+        "hydro" : {"power-level" : 8, "top-speed" : 12, "structural-integrity" : 10},
+        "nuclear" : {"power-level" : 12, "top-speed" : 4, "structural-integrity" : 4},
+    }
+    let temp_val = vals[val_to_index[val]] + amt;
+    if (temp_val < 0) alert("This value can't go below 0");
+    else if (vals[5] == 0) alert("You need to select a power type first.")
+    else if (temp_val > limits[vals[5]][val]) alert("That attribute is at capacity.");
+    else vals[val_to_index[val]] += amt;
     display();
 }
 
 function toggle(val) {
-    vals[val_to_index[val]] = !Boolean(vals[val_to_index[val]]) ? 1 : 0;
+    if (vals[5] == 0) alert("You need to select a power type first.");
+    else vals[val_to_index[val]] = !Boolean(vals[val_to_index[val]]) ? 1 : 0;
     display();
 }
 
@@ -32,4 +42,12 @@ function display() {
     document.getElementById("scanners-text").innerHTML = `Scanners: ${vals[3] == 1 ? "ON" : "OFF"}`;
     document.getElementById("defensive-systems-text").innerHTML = `Defensive systems: ${vals[4] == 1 ? "ON" : "OFF"}`;
     document.getElementById("power-types-text").innerHTML = `Power type: ${vals[5].charAt(0).toUpperCase() + vals[5].slice(1)}`;
+}
+
+function switchRobots(imgUrl) {
+    document.getElementById("disp").setAttribute("src", `images/${imgUrl}`);
+}
+
+function finalize() {
+    for (e of document.getElementsByTagName("button")) e.style.display = "none";
 }
